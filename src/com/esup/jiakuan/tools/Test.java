@@ -1,8 +1,14 @@
-package com.esup.jiakuan;
+package com.esup.jiakuan.tools;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+
+import org.nutz.ioc.loader.annotation.IocBean;
+import org.nutz.log.Log;
+import org.nutz.log.Logs;
+import org.nutz.mvc.annotation.At;
+import org.nutz.service.EntityService;
 
 import com.taobao.api.DefaultTaobaoClient;
 import com.taobao.api.TaobaoClient;
@@ -10,12 +16,17 @@ import com.taobao.api.domain.Trade;
 import com.taobao.api.request.TradesSoldIncrementGetRequest;
 import com.taobao.api.response.TradesSoldIncrementGetResponse;
 
-public class Test {
+@At
+@IocBean(fields = {"dao"})
+public class Test extends EntityService<Object> {
+	private static final Log log = Logs.get();
+
 	private static String url = "http://gw.api.taobao.com/router/rest";
 	private static String appkey = "12482076";
 	private static String secret = "8cdd79bc1a6b340696512fb64d8f3a3f";
 	private static String sessionKey = "6101a29d527b18c5644e8fc52add8c0969694188b2d68e126003866";
 
+	@At
 	public static void t() throws Exception {
 
 		// TaobaoClient client = new DefaultTaobaoClient(url, appkey, secret);
