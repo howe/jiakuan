@@ -13,14 +13,13 @@ import org.nutz.mvc.ioc.provider.ComboIocProvider;
  * 
  * @author yangq(qi.yang.cn@gmail.com) 2012-7-16
  */
-@IocBy(type = ComboIocProvider.class, args = {
-		"*org.nutz.ioc.loader.json.JsonLoader", "ioc/",
-		"*org.nutz.ioc.loader.annotation.AnnotationIocLoader",
-		"com.esup.jiakuan" })
+@IocBy(type = ComboIocProvider.class, args = {	"*org.nutz.ioc.loader.json.JsonLoader",
+												"ioc/",
+												"*org.nutz.ioc.loader.annotation.AnnotationIocLoader",
+												"com.esup.jiakuan"})
 @Encoding(input = "utf8", output = "utf8")
 @Modules(scanPackage = true)
 @Localization("msg")
 @Ok("ioc:json")
 @Fail("json")
-public class MainModule {
-}
+public class MainModule {}
