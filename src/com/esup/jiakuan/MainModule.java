@@ -16,7 +16,7 @@ import org.nutz.mvc.ioc.provider.ComboIocProvider;
 @IocBy(type = ComboIocProvider.class, args = {	"*org.nutz.ioc.loader.json.JsonLoader",
 												"ioc/",
 												"*org.nutz.ioc.loader.annotation.AnnotationIocLoader",
-												"com.esup"})
+												"com.esup.jiakuan"})
 @Encoding(input = "utf8", output = "utf8")
 @Modules(scanPackage = true)
 @Localization("msg")
