@@ -9,7 +9,7 @@ import org.nutz.mvc.annotation.Ok;
 import org.nutz.mvc.ioc.provider.ComboIocProvider;
 
 /**
- * 对接公司货物平台
+ * 加款器
  * 
  * @author yangq(qi.yang.cn@gmail.com) 2012-7-16
  */
