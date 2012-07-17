@@ -6,9 +6,9 @@ var ioc = {
 		},
 		fields : {
 			driverClassName : 'com.mysql.jdbc.Driver',
-			url             : 'jdbc:mysql://61.164.51.238:3306/esup?useUnicode=true&characterEncoding=UTF-8',
-			username        : 'esup',
-			password        : '221133psw',
+			url             : 'jdbc:mysql://218.94.158.226:33041/esup?useUnicode=true&characterEncoding=UTF-8',
+			username        : 'howe',
+			password        : '19860322',
 			initialSize     : 10,
 			maxActive       : 100,
 			minIdle         : 10,
