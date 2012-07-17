@@ -1,4 +1,4 @@
-package com.jiakuan;
+package com.esup.jiakuan;
 
 import org.nutz.mvc.annotation.Encoding;
 import org.nutz.mvc.annotation.Fail;
