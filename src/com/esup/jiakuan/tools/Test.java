@@ -36,7 +36,7 @@ public class Test extends EntityService<Object> {
 	private static String url = "http://gw.api.taobao.com/router/rest";
 	private static String appkey = "12482076";
 	private static String secret = "8cdd79bc1a6b340696512fb64d8f3a3f";
-	private static String sessionKey = "61022242122e0eeaa1de7fc4b88aaffa18a459379c4059d26003866";
+	private static String sessionKey = "610151840891a184594e7e6a011a49573dafdf78b18e67726003866";
 
 	private static final TaobaoClient client = new DefaultTaobaoClient(url, appkey, secret);
 
