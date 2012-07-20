@@ -1,10 +1,13 @@
-package com.esup.jiakuan.tools;
+package com.esup.jiakuan;
 
 import org.nutz.ioc.Ioc;
 import org.nutz.ioc.impl.NutIoc;
 import org.nutz.ioc.impl.PropertiesProxy;
 import org.nutz.ioc.loader.json.JsonLoader;
 import org.nutz.mvc.annotation.At;
+
+import com.taobao.api.DefaultTaobaoClient;
+import com.taobao.api.TaobaoClient;
 
 /**
  * 执行任务
@@ -20,9 +23,17 @@ public class RunTask {
 	private static String sessionKey = "";// TOP session密钥
 	private static String flag = "";// 指定商品标识，模糊匹配
 
-	public static void main(String[] args) {
+	private static String queryAccountUrl = "";// 用户账户查询url
+
+	private static TaobaoClient client = null;
+
+	public static void main(String[] args) throws Exception {
 		initConfig();
 
+		// Timer timer = new Timer();
+		// timer.schedule(new MyTask(sessionKey, flag, client), 1000, 1000);
+
+		new MyTask(sessionKey, flag, client, queryAccountUrl).run();
 	}
 
 	/** 初始化应用程序配置 */
@@ -38,11 +49,25 @@ public class RunTask {
 			secret = proxy.get("secret");
 			sessionKey = proxy.get("sessionKey");
 			flag = proxy.get("flag");
+			queryAccountUrl = proxy.get("queryAccountUrl");
+
+			client = new DefaultTaobaoClient(url, appkey, secret);
 
 			return true;
 		}
 		catch (Exception e) {
 
+			return false;
+		}
+
+	}
+
+	/** 标识符过滤 */
+	public static boolean checkFlag(String tmp) {
+
+		if (tmp.equals(flag)) {
+			return true;
+		} else {
 			return false;
 		}
 
