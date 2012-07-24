@@ -11,6 +11,7 @@ public class Trade {
 
 	// alipay_no,buyer_nick,created,pay_time,consign_time,end_time,total_fee,received_payment,has_buyer_message
 
+	private String tid;// 交易编号
 	private String alipay_no;// 支付宝交易号
 	private String buyer_nick;// 买家昵称
 	private Date created;// 交易创建时间
@@ -21,6 +22,14 @@ public class Trade {
 	private Double received_payment;// 实际到账金额
 	private boolean has_buyer_message;// 判断订单是否有买家留言
 	private String buyer_message;// 买家留言
+
+	public String getTid() {
+		return tid;
+	}
+
+	public void setTid(String tid) {
+		this.tid = tid;
+	}
 
 	public String getAlipay_no() {
 		return alipay_no;

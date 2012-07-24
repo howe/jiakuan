@@ -21,9 +21,14 @@ public class RunTask {
 	private static String appkey = "";// TOP授权密钥
 	private static String secret = "";// TOP授权加密字符串
 	private static String sessionKey = "";// TOP session密钥
+
+	private static int cycle = -29;// 默认搜索时间差为29分钟
 	private static String flag = "";// 指定商品标识，模糊匹配
 
 	private static String queryAccountUrl = "";// 用户账户查询url
+	private static String addMoneyUrl = "";// 用户账户加款url
+	private static String addMoneyLogUrl = "";// 用户账户加款日志url
+	private static String isRepeatAddMoneyUrl = "";// 判断用户账户是否重复加款url
 
 	private static TaobaoClient client = null;
 
@@ -33,7 +38,21 @@ public class RunTask {
 		// Timer timer = new Timer();
 		// timer.schedule(new MyTask(sessionKey, flag, client), 1000, 1000);
 
-		new MyTask(sessionKey, flag, client, queryAccountUrl).run();
+		while (true) {
+
+			new MyTask(	sessionKey,
+						cycle,
+						flag,
+						client,
+						queryAccountUrl,
+						addMoneyUrl,
+						addMoneyLogUrl,
+						isRepeatAddMoneyUrl).run();
+
+			Thread.sleep(1000);
+
+		}
+
 	}
 
 	/** 初始化应用程序配置 */
@@ -48,8 +67,12 @@ public class RunTask {
 			appkey = proxy.get("appkey");
 			secret = proxy.get("secret");
 			sessionKey = proxy.get("sessionKey");
+			cycle = proxy.getInt("cycle");
 			flag = proxy.get("flag");
 			queryAccountUrl = proxy.get("queryAccountUrl");
+			addMoneyUrl = proxy.get("addMoneyUrl");
+			addMoneyLogUrl = proxy.get("addMoneyLogUrl");
+			isRepeatAddMoneyUrl = proxy.get("isRepeatAddMoneyUrl");
 
 			client = new DefaultTaobaoClient(url, appkey, secret);
 

@@ -13,9 +13,11 @@ import com.taobao.api.domain.Order;
 import com.taobao.api.domain.Trade;
 import com.taobao.api.request.LogisticsDummySendRequest;
 import com.taobao.api.request.TradeCloseRequest;
+import com.taobao.api.request.TradeGetRequest;
 import com.taobao.api.request.TradesSoldIncrementGetRequest;
 import com.taobao.api.response.LogisticsDummySendResponse;
 import com.taobao.api.response.TradeCloseResponse;
+import com.taobao.api.response.TradeGetResponse;
 import com.taobao.api.response.TradesSoldIncrementGetResponse;
 
 /**
@@ -27,9 +29,8 @@ public class TopHelp {
 	private static final Log log = Logs.get();
 
 	/** 查询指定时间段的未付款交易集合 */
-	public static List<Trade> queryUnPaidTradeList(	TaobaoClient client,
-													String sessionKey,
-													Calendar calendar) throws Exception {
+	public static List<Trade> queryUnPaidTradeList(TaobaoClient client, String sessionKey, int cycle)
+			throws Exception {
 
 		/**
 		 * 1. 搜索当前会话用户作为卖家已卖出的增量交易数据 2.
@@ -39,21 +40,26 @@ public class TopHelp {
 		 * 参考： http://api.taobao.com/apidoc/api.htm?path=cid:5-apiId:128
 		 */
 
-		TradesSoldIncrementGetRequest req = new TradesSoldIncrementGetRequest();
-		req.setFields("alipay_no,buyer_nick,created,pay_time,consign_time,end_time,total_fee,received_payment,has_buyer_message");
+		Calendar calendar = Calendar.getInstance();
 
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		String tmp = sdf.format(calendar.getTime());
+
+		TradesSoldIncrementGetRequest req = new TradesSoldIncrementGetRequest();
+		req.setFields("tid,alipay_no,buyer_nick,created,pay_time,consign_time,end_time,total_fee,received_payment,has_buyer_message,orders.oid,orders.title");
 
 		/**
 		 * 建议使用30分钟以内的时间跨度，能大大提高响应速度和成功率。
 		 */
-		calendar.add(Calendar.MINUTE, -29);
-		Date dateTime = SimpleDateFormat.getDateTimeInstance()
-										.parse(sdf.format(calendar.getTime()));
+		String end = sdf.format(calendar.getTime());
+		calendar.add(Calendar.MINUTE, cycle);
+		String begin = sdf.format(calendar.getTime());
+
+		System.out.println("搜索未付款交易时间为：" + begin + " 到 " + end);
+
+		Date dateTime = SimpleDateFormat.getDateTimeInstance().parse(begin);
 		req.setStartModified(dateTime);
 
-		dateTime = SimpleDateFormat.getDateTimeInstance().parse(tmp);
+		dateTime = SimpleDateFormat.getDateTimeInstance().parse(end);
 		req.setEndModified(dateTime);
 
 		req.setStatus("WAIT_BUYER_PAY");// 等待买家付款
@@ -64,30 +70,26 @@ public class TopHelp {
 	}
 
 	/** 查询指定时间段的已付款交易集合 */
-	public static List<Trade> queryPaidTradeList(	TaobaoClient client,
-													String sessionKey,
-													Calendar calendar) throws Exception {
+	public static List<Trade> queryPaidTradeList(TaobaoClient client, String sessionKey, int cycle)
+			throws Exception {
 
-		/**
-		 * 1. 搜索当前会话用户作为卖家已卖出的增量交易数据 2.
-		 * 只能查询时间跨度为一天的增量交易记录：start_modified：2011-7-1 16:00:00 end_modified：
-		 * 2011-7-2 15:59:59（注意不能写成16:00:00） 3. 返回数据结果为创建订单时间的倒序
-		 * 
-		 * 参考： http://api.taobao.com/apidoc/api.htm?path=cid:5-apiId:128
-		 */
-
-		TradesSoldIncrementGetRequest req = new TradesSoldIncrementGetRequest();
-		req.setFields("alipay_no,buyer_nick,created,pay_time,consign_time,end_time,total_fee,received_payment,has_buyer_message");
+		Calendar calendar = Calendar.getInstance();
 
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		String tmp = sdf.format(calendar.getTime());
 
-		calendar.add(Calendar.MINUTE, -15);
-		Date dateTime = SimpleDateFormat.getDateTimeInstance()
-										.parse(sdf.format(calendar.getTime()));
+		TradesSoldIncrementGetRequest req = new TradesSoldIncrementGetRequest();
+		req.setFields("tid,alipay_no,buyer_nick,created,pay_time,consign_time,end_time,total_fee,received_payment,has_buyer_message,orders.oid,orders.title");
+
+		String end = sdf.format(calendar.getTime());
+		calendar.add(Calendar.MINUTE, cycle);
+		String begin = sdf.format(calendar.getTime());
+
+		System.out.println("搜索已付款交易时间为：" + begin + " 到 " + end);
+
+		Date dateTime = SimpleDateFormat.getDateTimeInstance().parse(begin);
 		req.setStartModified(dateTime);
 
-		dateTime = SimpleDateFormat.getDateTimeInstance().parse(tmp);
+		dateTime = SimpleDateFormat.getDateTimeInstance().parse(end);
 		req.setEndModified(dateTime);
 
 		req.setStatus("WAIT_SELLER_SEND_GOODS");// 等待卖家发货，买家已付款
@@ -100,28 +102,25 @@ public class TopHelp {
 	/** 查询指定时间段的已交易成功的交易集合 */
 	public static List<Trade> queryFinishedTradeList(	TaobaoClient client,
 														String sessionKey,
-														Calendar calendar) throws Exception {
+														int cycle) throws Exception {
 
-		/**
-		 * 1. 搜索当前会话用户作为卖家已卖出的增量交易数据 2.
-		 * 只能查询时间跨度为一天的增量交易记录：start_modified：2011-7-1 16:00:00 end_modified：
-		 * 2011-7-2 15:59:59（注意不能写成16:00:00） 3. 返回数据结果为创建订单时间的倒序
-		 * 
-		 * 参考： http://api.taobao.com/apidoc/api.htm?path=cid:5-apiId:128
-		 */
-
-		TradesSoldIncrementGetRequest req = new TradesSoldIncrementGetRequest();
-		req.setFields("alipay_no,buyer_nick,created,pay_time,consign_time,end_time,total_fee,received_payment,has_buyer_message");
+		Calendar calendar = Calendar.getInstance();
 
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		String tmp = sdf.format(calendar.getTime());
 
-		calendar.add(Calendar.MINUTE, -15);
-		Date dateTime = SimpleDateFormat.getDateTimeInstance()
-										.parse(sdf.format(calendar.getTime()));
+		TradesSoldIncrementGetRequest req = new TradesSoldIncrementGetRequest();
+		req.setFields("tid,alipay_no,buyer_nick,created,pay_time,consign_time,end_time,total_fee,received_payment,has_buyer_message,orders.oid,orders.title");
+
+		String end = sdf.format(calendar.getTime());
+		calendar.add(Calendar.MINUTE, cycle);
+		String begin = sdf.format(calendar.getTime());
+
+		System.out.println("搜索已交易交易时间为：" + begin + " 到 " + end);
+
+		Date dateTime = SimpleDateFormat.getDateTimeInstance().parse(begin);
 		req.setStartModified(dateTime);
 
-		dateTime = SimpleDateFormat.getDateTimeInstance().parse(tmp);
+		dateTime = SimpleDateFormat.getDateTimeInstance().parse(end);
 		req.setEndModified(dateTime);
 
 		req.setStatus("TRADE_FINISHED");// 交易成功
@@ -151,13 +150,13 @@ public class TopHelp {
 		if (orders != null) {
 
 			for (Order order : orders) {
-				System.out.println(order.getOid());
+				System.out.println("关闭子订单编号为：" + order.getOid());
 
 				TradeCloseRequest req = new TradeCloseRequest();
 				req.setTid(order.getOid());
 				req.setCloseReason("2、信息填写错误，重新拍");
 				TradeCloseResponse response = client.execute(req, sessionKey);
-				System.out.println(response.getMsg());
+				System.out.println("关闭订单返回消息：" + response.getMsg());
 			}
 			return true;
 		}
@@ -171,18 +170,26 @@ public class TopHelp {
 		if (orders != null) {
 
 			for (Order order : orders) {
-				System.out.println(order.getOid());
-
 				LogisticsDummySendRequest req = new LogisticsDummySendRequest();
 				req.setTid(order.getOid());
 				LogisticsDummySendResponse response = client.execute(req, sessionKey);
-				System.out.println(response.getMsg());
+				System.out.println("调用TOP错误：" + response.getMsg());
 			}
 			return true;
 		}
 		return false;
 	}
 
-	/** 获取单笔交易的买家留言和支付宝交易号（性能高） */
+	/** 获取单笔交易的买家留言（性能高） */
+	public static String queryBuyerMessageByTid(TaobaoClient client, String sessionKey, Long tid)
+			throws Exception {
+
+		TradeGetRequest req = new TradeGetRequest();
+		req.setFields("buyer_message");
+		req.setTid(tid);
+		TradeGetResponse response = client.execute(req, sessionKey);
+
+		return response.getTrade().getBuyerMessage();
+	}
 
 }
