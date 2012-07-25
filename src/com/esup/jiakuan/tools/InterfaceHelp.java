@@ -49,13 +49,13 @@ public class InterfaceHelp {
 	/** 通过账户给用户加款 */
 	public static boolean addMoneyByAccount(String account,
 											String received_payment,
-											Long order_no,
+											Long tid,
 											String addMoneyUrl) throws Exception {
 
 		List<NameValuePair> formparams = new ArrayList<NameValuePair>();
 		formparams.add(new BasicNameValuePair("account", account));
 		formparams.add(new BasicNameValuePair("received_payment", received_payment));
-		formparams.add(new BasicNameValuePair("order_no", "" + order_no));
+		formparams.add(new BasicNameValuePair("tid", "" + tid));
 		UrlEncodedFormEntity uef = new UrlEncodedFormEntity(formparams, "UTF-8");
 		HttpPost httppost = new HttpPost(addMoneyUrl);
 		httppost.setEntity(uef);
