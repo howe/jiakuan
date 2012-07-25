@@ -76,7 +76,7 @@ public class InterfaceHelp {
 	}
 
 	/** 加款日志 */
-	public static boolean addMoneyLog(	String account,
+	public static boolean addMoneyLog(String account,
 										Long tid,
 										String alipay_no,
 										String buyer_nick,
